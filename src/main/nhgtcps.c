@@ -9,7 +9,7 @@ int main(int argc,char**argv){
     void *p=(void *)0;
     for(int i=0;i<100;i++){
         p=lmm_alloc(1024);
-        printf("%d ",(int)p);
+        printf("%d\n",i);
     }
     lmm_end();
 }
