@@ -8,6 +8,9 @@ typedef struct __lmmblock{
     struct __lmmblock *n;
     void *d;
 } LMMB,*PLMMB;
+typedef struct __lmmp{
+    int s;
+} LMMP,*PLMMP;
 static PLMMB c=(void *)0;
 int lmm_start(){
     c=(PLMMB)malloc(sizeof(LMMB)+lmm_block_size);
@@ -22,15 +25,52 @@ int lmm_start(){
     return 1;
 }
 int lmm_end(){
-    while(c!=(void *)0){
-        free(c);
-        c=c->n;
+    PLMMB t=c;
+    while (t!=(void *)0)
+    {
+        free(t);
+        t=t->n;
     }
-    return 0;
+    c=(void *)0;
 }
-void *lmm_alloc(){
+void *lmm_alloc(int size){
+    void *r;
+    if(size>=lmm_block_size){
+        return (void *)0;
+    }
+    PLMMB t=c;
+    int rs=(sizeof(LMMP)+size);
+    while(t!=(void *)0){
+        if(t->s>rs){
+            r=t->d+t->s-rs;
+            t->s-=rs;
+            ((PLMMP)r)->s=size;
+            return r;
+        }else if(t->e+rs<lmm_block_size){
+            r=t->d+t->s-rs;
+            t->e+=rs;
+            ((PLMMP)r)->s=size;
+            return r;
+        }else if(t->n==(void *)0){
+            t=(PLMMB)malloc(sizeof(LMMB)+lmm_block_size);
+            if(t==(void *)0){
+                return (void *)0;
+            }
+            t->n=c;
+            t->s=0;
+            t->e=rs;
+            t->o=0;
+            t->n=c;
+            t->d=t+sizeof(LMMB);
+            c=t;
+            return r;
+        }else{
+            t=t->n;
+        }
+    }
     return (void *)0;
 }
 void lmm_free(void *p){
+    
     
 }
