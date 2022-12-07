@@ -29,9 +29,9 @@ extern int lmm_end(){
     PLMMB t=c;
     while (t!=(void *)0)
     {
-        PLMMB p=t->n;
-        free(t);
-        t=p;
+        PLMMB p=t;
+        t=t->n;
+        free(p);
     }
     c=(void *)0;
 }
