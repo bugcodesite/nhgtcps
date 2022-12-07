@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "config.h": "c",
-        "nhmsg.h": "c"
+        "nhmsg.h": "c",
+        "cstdlib": "c"
     }
 }

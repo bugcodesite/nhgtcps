@@ -7,7 +7,7 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${file}","${fileDirname}/nhmsg.c",
+                "${file}","${fileDirname}/nhmsg.c","${fileDirname}/lmm.c",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
             ],
