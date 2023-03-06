@@ -125,6 +125,6 @@ void * lmm_get(int size){
 	return NULL;
 }
 
-void * lmm_rm(void *p){
+void lmm_rm(void *p){
 	return p;
 }

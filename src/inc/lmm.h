@@ -24,5 +24,5 @@ extern void * lmm_get(int size);
         //can reuse p
     }
 */
-extern void * lmm_rm(void *p);
+extern void lmm_rm(void *p);
 #endif
