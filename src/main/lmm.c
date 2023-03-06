@@ -130,7 +130,7 @@ static PLMM_S lmm_store_cache=NULL;
 #define __lmm_block_size	102400
 #define __lmm_block_data_size	__lmm_block_size-sizeof(LMM_S)
 //////////////////////////////////////////////////
-void * lmm_get(PLMM_S p,int size){
+void * lmm_get_(PLMM_S p,int size){
 	return NULL;
 }
 void * lmm_get(int size){
@@ -144,11 +144,11 @@ void * lmm_get(int size){
 		p->datasize=0;
 		p->freesize=__lmm_block_data_size;
 		p->next=NULL;
-		return lmm_get(p->next,size);
+		return lmm_get_(p->next,size);
 	}else{
 		while(NULL!=p){
 			if(p->freesize>size+sizeof(LMM_S)){
-				return lmm_get(p,size);
+				return lmm_get_(p,size);
 			}else if(NULL==p->next){
 				p->next=(PLMM_S)malloc(__lmm_block_size);
 				if(NULL==p->next){
@@ -158,7 +158,7 @@ void * lmm_get(int size){
 				p->headsize=0;
 				p->datasize=0;
 				p->freesize=__lmm_block_data_size;
-				return lmm_get(p->next,size);
+				return lmm_get_(p->next,size);
 			}
 			p=p->next;
 		}
