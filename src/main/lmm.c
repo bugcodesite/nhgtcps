@@ -123,17 +123,40 @@ extern void * lmm_alloc(int size){
 typedef struct __lmm_store{
 	int headsize;
 	int datasize;
+	int freesize;
 	struct __lmm_store *next;
 } LMM_S,*PLMM_S;
 static PLMM_S lmm_store_cache=NULL;
 #define __lmm_block_size	102400
+#define __lmm_block_data_size	__lmm_block_size-sizeof(LMM_S)
 //////////////////////////////////////////////////
 void * lmm_get(int size){
 	if(NULL==lmm_store_cache){
 		lmm_store_cache=(PLMM_S)malloc(__lmm_block_size);
+		lmm_store_cache->headsize=0;
+		lmm_store_cache->datasize=0;
+		lmm_store_cache->freesize=__lmm_block_data_size;
 		lmm_store_cache->next=NULL;
+		return lmm_get(p->next,size);
+	}else{
+		PLMM_S p=lmm_store_cache;
+		while(NULL!=p->next){
+			if(p->freesize>size+sizeof(LMM_S)){
+				return lmm_get(p,size);
+			}
+			p=p->next;
+		}
+		if(p->freesize>size+sizeof(LMM_S)){
+				return lmm_get(p,size);
+		}else if(NULL==p->next){
+			p->next=(PLMM_pS)malloc(__lmm_block_size);
+			p->next->next=NULL;
+			p->headsize=0;
+			p->datasize=0;
+			p->freesize=__lmm_block_data_size;
+			return lmm_get(p->next,size);
+		}
 	}
-
 	return NULL;
 }
 
