@@ -130,36 +130,42 @@ static PLMM_S lmm_store_cache=NULL;
 #define __lmm_block_size	102400
 #define __lmm_block_data_size	__lmm_block_size-sizeof(LMM_S)
 //////////////////////////////////////////////////
+void * lmm_get(PLMM_S p,int size){
+	return NULL;
+}
 void * lmm_get(int size){
-	if(NULL==lmm_store_cache){
-		lmm_store_cache=(PLMM_S)malloc(__lmm_block_size);
-		lmm_store_cache->headsize=0;
-		lmm_store_cache->datasize=0;
-		lmm_store_cache->freesize=__lmm_block_data_size;
-		lmm_store_cache->next=NULL;
+	PLMM_S p=lmm_store_cache;
+	if(NULL==p){
+		p=lmm_store_cache=(PLMM_S)malloc(__lmm_block_size);
+		if(NULL==p){
+			return NULL;
+		}
+		p->headsize=0;
+		p->datasize=0;
+		p->freesize=__lmm_block_data_size;
+		p->next=NULL;
 		return lmm_get(p->next,size);
 	}else{
-		PLMM_S p=lmm_store_cache;
-		while(NULL!=p->next){
+		while(NULL!=p){
 			if(p->freesize>size+sizeof(LMM_S)){
 				return lmm_get(p,size);
+			}else if(NULL==p->next){
+				p->next=(PLMM_S)malloc(__lmm_block_size);
+				if(NULL==p->next){
+					return NULL;
+				}
+				p->next->next=NULL;
+				p->headsize=0;
+				p->datasize=0;
+				p->freesize=__lmm_block_data_size;
+				return lmm_get(p->next,size);
 			}
 			p=p->next;
-		}
-		if(p->freesize>size+sizeof(LMM_S)){
-				return lmm_get(p,size);
-		}else if(NULL==p->next){
-			p->next=(PLMM_pS)malloc(__lmm_block_size);
-			p->next->next=NULL;
-			p->headsize=0;
-			p->datasize=0;
-			p->freesize=__lmm_block_data_size;
-			return lmm_get(p->next,size);
 		}
 	}
 	return NULL;
 }
 
 void lmm_rm(void *p){
-	return p;
+	
 }
