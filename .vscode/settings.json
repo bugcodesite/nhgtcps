@@ -4,5 +4,6 @@
         "nhmsg.h": "c",
         "cstdlib": "c",
         "lmm.h": "c"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
