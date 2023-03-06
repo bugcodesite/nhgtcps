@@ -117,3 +117,14 @@ extern void * lmm_alloc(int size){
 	}
 	return _lmm_alloc_1(lmm_cache,size);
 }
+
+
+
+
+void * lmm_get(int size){
+	return NULL;
+}
+
+void * lmm_rm(void *p){
+	return p;
+}
