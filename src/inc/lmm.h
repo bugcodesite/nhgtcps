@@ -10,7 +10,7 @@ int lmm_free(void *p);
 typedef struct __lmm_store{
 
 
-} LMMS,PLMMS;
+} LMM_S,PLMM_S;
 /**
     alloc memory block
 */
