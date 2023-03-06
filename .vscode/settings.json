@@ -1,9 +1,8 @@
 {
     "files.associations": {
-        //"config.h": "c",
-        //"nhmsg.h": "c",
         "cstdlib": "c",
-        "lmm.h": "c"
+        "lmm.h": "c",
+        "nhmsg.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
