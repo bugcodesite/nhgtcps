@@ -7,10 +7,7 @@ void * lmm_alloc();
 int lmm_free(void *p);
 
 
-typedef struct __lmm_store{
 
-
-} LMM_S,PLMM_S;
 /**
     alloc memory block
 */

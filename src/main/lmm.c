@@ -120,7 +120,10 @@ extern void * lmm_alloc(int size){
 
 
 
+typedef struct __lmm_store{
 
+
+} LMM_S,PLMM_S;
 void * lmm_get(int size){
 	return NULL;
 }
