@@ -120,44 +120,79 @@ extern void * lmm_alloc(int size){
 
 
 //////////////////////////////////////////////////
+typedef struct __lmm_item{
+	struct __lmm_item *next;
+	int pos;
+	int size;
+} LMM_ITEM,*PLMM_ITEM;
 typedef struct __lmm_store{
-	int headsize;
-	int datasize;
-	int freesize;
 	struct __lmm_store *next;
+	PLMM_ITEM item;
 } LMM_S,*PLMM_S;
 static PLMM_S lmm_store_cache=NULL;
-#define __lmm_block_size	102400
+#define __lmm_block_size	1024
+									//102400
 #define __lmm_block_data_size	__lmm_block_size-sizeof(LMM_S)
 //////////////////////////////////////////////////
 void * lmm_get_(PLMM_S p,int size){
+	if(NULL==p){
+		return NULL;
+	}
+	void *p0=(void *)p+sizeof(LMM_S);
+	PLMM_ITEM i=p->item;
+	int o=0;
+	int allocblocksize=sizeof(LMM_ITEM)+size;
+	if(i!=NULL){
+		o=sizeof(LMM_ITEM)+i->size;
+		if(o+allocblocksize<__lmm_block_data_size){
+			i=(PLMM_ITEM)(((void *)i)+o);
+			i->next=p->item;
+			i->size=size;
+			p->item=i;
+			return ((void *)i)+sizeof(LMM_ITEM);
+		}
+		while(NULL!=i->next){
+			p0=((void *)i)+sizeof(LMM_ITEM)+i->size;
+			if(p0+allocblocksize<((void *)i->next)){
+				PLMM_ITEM p1=(PLMM_ITEM)p0;
+				p1->next=i->next;
+				p1->size=size;
+				i->next=p1;
+				return ((void *)p1)+sizeof(LMM_ITEM);
+			}
+		}
+	}else{
+		i=(PLMM_ITEM)(p0+o);
+		i->next=p->item;
+		i->size=size;
+		p->item=i;
+		return ((void *)i)+sizeof(LMM_ITEM);
+	}
 	return NULL;
 }
 void * lmm_get(int size){
 	PLMM_S p=lmm_store_cache;
+	void *r;
 	if(NULL==p){
 		p=lmm_store_cache=(PLMM_S)malloc(__lmm_block_size);
 		if(NULL==p){
 			return NULL;
 		}
-		p->headsize=0;
-		p->datasize=0;
-		p->freesize=__lmm_block_data_size;
+		p->item=NULL;
 		p->next=NULL;
-		return lmm_get_(p->next,size);
+		return lmm_get_(p,size);
 	}else{
 		while(NULL!=p){
-			if(p->freesize>size+sizeof(LMM_S)){
-				return lmm_get_(p,size);
+			if((r=lmm_get_(p,size))!=NULL){
+				return r;
 			}else if(NULL==p->next){
 				p->next=(PLMM_S)malloc(__lmm_block_size);
 				if(NULL==p->next){
 					return NULL;
 				}
-				p->next->next=NULL;
-				p->headsize=0;
-				p->datasize=0;
-				p->freesize=__lmm_block_data_size;
+				p=p->next;
+				p->next=NULL;
+				p->item=NULL;
 				return lmm_get_(p->next,size);
 			}
 			p=p->next;

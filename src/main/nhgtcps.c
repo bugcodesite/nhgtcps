@@ -4,7 +4,7 @@
 
 int main(int argc,char**argv){
     printf("%s\n",ver);
-    test();
+    /*test();
     void *p=(void *)0;
     for(int i=0;i<12;i++){
 		printf("alloc p\n");
@@ -19,5 +19,12 @@ int main(int argc,char**argv){
     }
 	printf("start free\n");
     lmm_end();
-	printf("endend\n");
+	printf("endend\n");*/
+    void *oldp=NULL;
+    void *p=NULL;
+    for(int i=0;i<13;i++){
+        p=lmm_get(100);
+        printf("%d  %d\n",p,p-oldp);
+        oldp=p;
+    }
 }
