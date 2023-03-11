@@ -238,6 +238,7 @@ void lmm_rm(void *d){
 			p=p->next;
 			free(p0);
 		}
+		lmm_store_cache=NULL;
 	}else{
 		while(NULL!=p){
 			if(p<d&&d<(((void *)p)+__lmm_block_data_size)){

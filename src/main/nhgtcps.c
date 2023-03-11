@@ -25,7 +25,9 @@ int main(int argc,char**argv){
     for(int i=0;i<30;i++){
         p=lmm_get(100);
         printf("%d  %d\n",p,p-oldp);
-        lmm_rm(oldp);
+        if(NULL!=oldp){
+            lmm_rm(oldp);
+        }
         oldp=p;
     }
     lmm_rm(NULL);
