@@ -202,7 +202,7 @@ void * lmm_get(int size){
 				p=p->next;
 				p->next=NULL;
 				p->item=NULL;
-				return lmm_get_(p->next,size);
+				return lmm_get_(p,size);
 			}
 			p=p->next;
 		}
