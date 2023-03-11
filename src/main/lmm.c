@@ -211,17 +211,26 @@ void * lmm_get(int size){
 }
 
 void lmm_rm_(PLMM_S p,void *d){
-	if(NULL==p){
-		return NULL;
-	}
 	void *p0=(void *)p+sizeof(LMM_S);
 	PLMM_ITEM i=p->item;
-	int o=0;
-
+	if(NULL==i){
+		return;
+	}
+	if(((void *)i)==d+sizeof(LMM_ITEM)){
+		p->item=i->next;
+		return;
+	}
+	while(NULL!=i->next){
+		if(((void *)i->next)==d+sizeof(LMM_ITEM)){
+			i->next=i->next->next;
+			return;
+		}
+		i=i->next;
+	}
 }
 void lmm_rm(void *d){
 	PLMM_S p=lmm_store_cache;
-	if(NULL==p){
+	if(NULL==p||NULL==d){
 		return;
 	}else if(NULL==d){
 		while(NULL!=p){
@@ -235,6 +244,7 @@ void lmm_rm(void *d){
 				lmm_rm_(p,d);
 				return;
 			}
+			p=p->next;
 		}
 	}
 	return NULL;
