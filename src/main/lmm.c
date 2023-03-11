@@ -221,7 +221,7 @@ void lmm_rm_(PLMM_S p,void *d){
 		return;
 	}
 	while(NULL!=i->next){
-		if(((void *)i->next)==d+sizeof(LMM_ITEM)){
+		if(((void *)i->next)==d-sizeof(LMM_ITEM)){
 			i->next=i->next->next;
 			return;
 		}
