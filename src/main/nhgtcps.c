@@ -22,7 +22,7 @@ int main(int argc,char**argv){
 	printf("endend\n");*/
     void *oldp=NULL;
     void *p=NULL;
-    for(int i=0;i<13;i++){
+    for(int i=0;i<30;i++){
         p=lmm_get(100);
         printf("%d  %d\n",p,p-oldp);
         oldp=p;
