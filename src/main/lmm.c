@@ -160,8 +160,8 @@ void * lmm_get_(PLMM_S p,int size){
 		}
 		while(NULL!=i->next){
 			//insert
-			p0=((void *)i)+sizeof(LMM_ITEM)+i->size;
-			if(p0+allocblocksize<((void *)i->next)){
+			p0=((void *)i->next)+sizeof(LMM_ITEM)+i->next->size;
+			if(p0-allocblocksize>=p0){
 				PLMM_ITEM p1=(PLMM_ITEM)p0;
 				p1->next=i->next;
 				p1->size=size;
