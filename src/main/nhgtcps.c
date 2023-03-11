@@ -27,4 +27,5 @@ int main(int argc,char**argv){
         printf("%d  %d\n",p,p-oldp);
         oldp=p;
     }
+    lmm_rm(NULL);
 }

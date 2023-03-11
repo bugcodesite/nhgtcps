@@ -210,6 +210,32 @@ void * lmm_get(int size){
 	return NULL;
 }
 
-void lmm_rm(void *p){
-	
+void lmm_rm_(PLMM_S p,void *d){
+	if(NULL==p){
+		return NULL;
+	}
+	void *p0=(void *)p+sizeof(LMM_S);
+	PLMM_ITEM i=p->item;
+	int o=0;
+
+}
+void lmm_rm(void *d){
+	PLMM_S p=lmm_store_cache;
+	if(NULL==p){
+		return;
+	}else if(NULL==d){
+		while(NULL!=p){
+			void *p0=p;
+			p=p->next;
+			free(p0);
+		}
+	}else{
+		while(NULL!=p){
+			if(p<d&&d<(((void *)p)+__lmm_block_data_size)){
+				lmm_rm_(p,d);
+				return;
+			}
+		}
+	}
+	return NULL;
 }
