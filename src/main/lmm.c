@@ -142,16 +142,24 @@ void * lmm_get_(PLMM_S p,int size){
 	PLMM_ITEM i=p->item;
 	int o=0;
 	int allocblocksize=sizeof(LMM_ITEM)+size;
+	if(__lmm_block_data_size<allocblocksize){
+		return NULL;
+	}
 	if(i!=NULL){
 		o=sizeof(LMM_ITEM)+i->size;
 		if(o+allocblocksize<__lmm_block_data_size){
-			i=(PLMM_ITEM)(((void *)i)+o);
+			//append
+			i=(PLMM_ITEM)(((void *)i)+i->size+sizeof(LMM_ITEM));
+			if(((void *)i)>=(p0+__lmm_block_data_size-allocblocksize)){
+				return NULL;
+			}
 			i->next=p->item;
 			i->size=size;
 			p->item=i;
 			return ((void *)i)+sizeof(LMM_ITEM);
 		}
 		while(NULL!=i->next){
+			//insert
 			p0=((void *)i)+sizeof(LMM_ITEM)+i->size;
 			if(p0+allocblocksize<((void *)i->next)){
 				PLMM_ITEM p1=(PLMM_ITEM)p0;
@@ -162,6 +170,7 @@ void * lmm_get_(PLMM_S p,int size){
 			}
 		}
 	}else{
+		//create first
 		i=(PLMM_ITEM)(p0+o);
 		i->next=p->item;
 		i->size=size;
